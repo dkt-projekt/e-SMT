@@ -1,8 +1,6 @@
 package de.dkt.eservices.esmt;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.*;
 import eu.freme.common.conversion.etranslate.TranslationConversionService;
 import eu.freme.common.conversion.rdf.RDFConstants;
 import eu.freme.common.conversion.rdf.RDFConversionService;
@@ -44,7 +42,8 @@ public class TranslateSegment {
     public ResponseEntity<String> translate(
             @RequestHeader(value = "Accept") String acceptHeader,
             @RequestHeader(value = "Content-Type") String contentTypeHeader,
-            @RequestParam("language") String language,
+            @RequestParam("source-lang") String sourceLang,
+            @RequestParam("target-lang") String targetLang,
             @RequestBody String postBody,
             @RequestParam Map<String, String> allParams) {
 
@@ -58,18 +57,24 @@ public class TranslateSegment {
                 model = ModelFactory.createDefaultModel();
                 rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, nifParameterFactory.getDefaultPrefix());
             } else {
-
                 model = rdfConversionService.unserializeRDF(postBody, nifParameters.getInformat());
             }
 
             Statement firstPlaintext = rdfConversionService.extractFirstPlaintext(model);
+            Resource subject = firstPlaintext.getSubject();
+            String inputString = firstPlaintext.getObject().asLiteral().getString();
 
-            String input = firstPlaintext.getObject().asLiteral().getString();
-         // get shell script gfgf
+            // get shell script (with inputString, sourceLang and targetLang) and write result to resultString
+            String resultString = "TEST";
 
+            if (!model.getNsPrefixMap().containsValue(RDFConstants.itsrdfPrefix)) {
+                model.setNsPrefix("itsrdf", RDFConstants.itsrdfPrefix);
+            }
 
+            Literal literal = model.createLiteral(resultString, targetLang);
+            subject.addLiteral(model.getProperty(RDFConstants.itsrdfPrefix + "target"), literal);
 
-        return restHelper.createSuccessResponse(model, nifParameters.getOutformat());
+            return restHelper.createSuccessResponse(model, nifParameters.getOutformat());
         }catch (FREMEHttpException e){
             logger.error("Error", e);
             throw e;
