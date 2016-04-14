@@ -65,7 +65,7 @@ public class TranslateSegment {
             Statement firstPlaintext = rdfConversionService.extractFirstPlaintext(model);
 
             String input = firstPlaintext.getObject().asLiteral().getString();
-         // get shell script gfgf
+         // call shell script and extract output
 
 
 
