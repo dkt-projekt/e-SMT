@@ -65,7 +65,7 @@ public class TranslateSegment {
             Statement firstPlaintext = rdfConversionService.extractFirstPlaintext(model);
 
             String input = firstPlaintext.getObject().asLiteral().getString();
-         // call shell script and extract output
+         // call shell script and extract output to convert to nif
 
 
 
