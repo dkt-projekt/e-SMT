@@ -50,12 +50,12 @@ public class TranslateSegment {
         NIFParameterSet nifParameters = restHelper.normalizeNif(postBody,
                 acceptHeader, contentTypeHeader, allParams, false);
 
-        Model model = null;
+        Model model;
 
         try {
             if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
                 model = ModelFactory.createDefaultModel();
-                rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, nifParameterFactory.getDefaultPrefix());
+                rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), sourceLang, nifParameterFactory.getDefaultPrefix());
             } else {
                 model = rdfConversionService.unserializeRDF(postBody, nifParameters.getInformat());
             }
