@@ -1,89 +1,37 @@
 package de.dkt.eservices.esmt;
 
-import com.hp.hpl.jena.rdf.model.*;
-import eu.freme.common.conversion.etranslate.TranslationConversionService;
-import eu.freme.common.conversion.rdf.RDFConstants;
-import eu.freme.common.conversion.rdf.RDFConversionService;
-import eu.freme.common.exception.BadRequestException;
-import eu.freme.common.exception.FREMEHttpException;
-import eu.freme.common.exception.InternalServerErrorException;
-import eu.freme.common.rest.NIFParameterFactory;
-import eu.freme.common.rest.NIFParameterSet;
-import eu.freme.common.rest.RestHelper;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
-
 /**
- * Created by ansr01 on 14/04/16.
+ * Created by ansr01 on 25/05/16.
+ * Class encapsulating command for translating a segment
  */
 
-@RestController
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class TranslateSegment {
-    Logger logger = Logger.getLogger(TranslateSegment.class);
-    @Autowired
-    TranslationConversionService translationConversionService;
 
-    @Autowired
-    RestHelper restHelper;
+    public String executeCommand(String inputStr, String srclang){
 
-    @Autowired
-    RDFConversionService rdfConversionService;
+        String command = "sh /Users/ansr01/Software/mosesdecoder-RELEASE-3.0/ankit_toy/4dkt/translate_main.sh -i " + inputStr + " -l " + srclang;
+        StringBuffer output = new StringBuffer();
+        Process p;
 
-    @Autowired
-    NIFParameterFactory nifParameterFactory;
+        try{
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-
-    @RequestMapping(value = "/e-smt", method = RequestMethod.POST)
-    public ResponseEntity<String> translate(
-            @RequestHeader(value = "Accept") String acceptHeader,
-            @RequestHeader(value = "Content-Type") String contentTypeHeader,
-            @RequestParam("source-lang") String sourceLang,
-            @RequestParam("target-lang") String targetLang,
-            @RequestBody String postBody,
-            @RequestParam Map<String, String> allParams) {
-
-        NIFParameterSet nifParameters = restHelper.normalizeNif(postBody,
-                acceptHeader, contentTypeHeader, allParams, false);
-
-        Model model = null;
-
-        try {
-            if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
-                model = ModelFactory.createDefaultModel();
-                rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, nifParameterFactory.getDefaultPrefix());
-            } else {
-                model = rdfConversionService.unserializeRDF(postBody, nifParameters.getInformat());
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
             }
-
-            Statement firstPlaintext = rdfConversionService.extractFirstPlaintext(model);
-            Resource subject = firstPlaintext.getSubject();
-            String inputString = firstPlaintext.getObject().asLiteral().getString();
-
-            // get shell script (with inputString, sourceLang and targetLang) and write result to resultString
-            String resultString = "TEST";
-
-            if (!model.getNsPrefixMap().containsValue(RDFConstants.itsrdfPrefix)) {
-                model.setNsPrefix("itsrdf", RDFConstants.itsrdfPrefix);
-            }
-
-            Literal literal = model.createLiteral(resultString, targetLang);
-            subject.addLiteral(model.getProperty(RDFConstants.itsrdfPrefix + "target"), literal);
-
-            return restHelper.createSuccessResponse(model, nifParameters.getOutformat());
-        }catch (FREMEHttpException e){
-            logger.error("Error", e);
-            throw e;
         } catch (Exception e) {
-            logger.error("Error", e);
-            throw new BadRequestException(e.getMessage());
+            e.printStackTrace();
         }
+        return output.toString();
     }
 
+    public static void main(String[] args) {
+
+    }
 }
-
-
