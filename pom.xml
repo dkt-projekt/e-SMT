@@ -12,24 +12,38 @@
     
 
     <repositories>
-        <repository>
-            <id>freme-release</id>
-            <name>freme-nexus</name>
-            <url>http://rv1443.1blu.de/nexus/content/repositories/releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>freme-nexus</id>
-            <name>freme-nexus</name>
-            <url>http://rv1443.1blu.de/nexus/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    	<distributionManagement>
+	<repository>
+		<id>freme-release</id>
+		<name>freme-nexus</name>
+		<url>http://rv1443.1blu.de/nexus/content/repositories/releases/</url>
+		<snapshots>
+			<enabled>false</enabled>
+		</snapshots>
+	</repository>
+	<repository>
+		<id>freme-nexus</id>
+		<name>freme-nexus</name>
+		<url>http://rv1443.1blu.de/nexus/content/repositories/snapshots/</url>
+		<releases>
+			<enabled>false</enabled>
+		</releases>
+	</repository>
+	<repository>
+		<id>releases</id>
+		<url>http://v35731.1blu.de:8081/nexus/content/repositories/releases</url>
+		<snapshots>
+			<enabled>false</enabled>
+		</snapshots>
+	</repository>
+	<repository>
+		<id>snapshots</id>
+		<url>http://v35731.1blu.de:8081/nexus/content/repositories/snapshots</url>
+		<snapshots>
+			<enabled>true</enabled>
+		</snapshots>
+	</repository>
+	</repositories>    
+	<distributionManagement>
 		<repository>
 			<id>releases</id>
 			<url>http://v35731.1blu.de:8081/nexus/content/repositories/releases</url>
