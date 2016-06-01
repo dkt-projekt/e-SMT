@@ -2,17 +2,37 @@ package de.dkt.eservices.esmt;
 
 /**
  * Created by ansr01 on 25/05/16.
- * Class encapsulating command for translating a segment
+ * Class encapsulating command for translating a segment, i.e. invoking shell script for moses from Java
  */
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class TranslateSegment {
 
     public String executeCommand(String inputStr, String srclang){
 
-        String command = "sh /Users/ansr01/Software/mosesdecoder-RELEASE-3.0/ankit_toy/4dkt/translate_main.sh -i " + inputStr + " -l " + srclang;
+        // hard-coded variables: the location of the moses
+        //String pwd = "/Users/ansr01/Software/mosesdecoder-RELEASE-3.0/ankit_toy/4dkt/"; // for local machine
+        String pwd = "/usr/local/mt/WS_dkt/"; // for dkt server
+        File f = new File(pwd, "minal");  // temporary file created in pwd
+
+        // storing the inputStr in a file
+        try {
+            PrintWriter outf = new PrintWriter(new FileWriter(f));
+            outf.println(inputStr);
+            outf.close();
+        }
+        catch (IOException e) {}
+
+        // The actual command to call the shell script with the 2 arguments
+        String command = "sh " + pwd + "translate_main.sh -i " + f.getAbsoluteFile() + " -l " + srclang;
+
+        // Executing the command using a Process object
         StringBuffer output = new StringBuffer();
         Process p;
 
