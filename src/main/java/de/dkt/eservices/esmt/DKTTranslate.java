@@ -23,9 +23,11 @@ import eu.freme.common.conversion.rdf.RDFConstants;
 import eu.freme.common.conversion.rdf.RDFConversionService;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.FREMEHttpException;
+import eu.freme.common.rest.BaseRestController;
 import eu.freme.common.rest.NIFParameterFactory;
 import eu.freme.common.rest.NIFParameterSet;
 import eu.freme.common.rest.RestHelper;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +41,7 @@ import java.util.Map;
  */
 
 @RestController
-public class DKTTranslate {
+public class DKTTranslate extends BaseRestController {
     Logger logger = Logger.getLogger(DKTTranslate.class);
     @Autowired
     TranslationConversionService translationConversionService;
@@ -58,6 +60,7 @@ public class DKTTranslate {
     public ResponseEntity<String> translate(
             @RequestHeader(value = "Accept") String acceptHeader,
             @RequestHeader(value = "Content-Type") String contentTypeHeader,
+            @RequestParam(value = "input") String input,
             @RequestParam("source-lang") String sourceLang,
             @RequestParam("target-lang") String targetLang,
             @RequestBody String postBody,
