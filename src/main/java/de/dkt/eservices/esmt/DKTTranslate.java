@@ -58,12 +58,12 @@ public class DKTTranslate extends BaseRestController {
 
     @RequestMapping(value = "/e-smt", method = RequestMethod.POST)
     public ResponseEntity<String> translate(
-            @RequestHeader(value = "Accept") String acceptHeader,
-            @RequestHeader(value = "Content-Type") String contentTypeHeader,
-            @RequestParam(value = "input") String input,
-            @RequestParam("source-lang") String sourceLang,
-            @RequestParam("target-lang") String targetLang,
-            @RequestBody String postBody,
+            @RequestHeader(value = "Accept", required = false) String acceptHeader,
+            @RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
+            @RequestParam(value = "input", required = false) String input,
+            @RequestParam(value = "source-lang", required = false) String sourceLang,
+            @RequestParam(value = "target-lang", required = false) String targetLang,
+            @RequestBody (required = false) String postBody,
             @RequestParam Map<String, String> allParams) {
 
         NIFParameterSet nifParameters = restHelper.normalizeNif(postBody,
