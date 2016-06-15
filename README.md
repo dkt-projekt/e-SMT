@@ -21,4 +21,4 @@ In addition to the input and Content-type (header) parameters, the following par
 A document in NIF format.
 
 Example cURL post for e-smt:
-`curl -X POST --header "Content-type:text/plain" "http://api.digitale-kuratierung.de/api/e-smt?source-lang=de&target-lang=en&input=hallo+welt"`
+`curl -X POST --header "Content-type:text/plain" "http://api.digitale-kuratierung.de/api/e-smt?source-lang=de&target-lang=en&input=das+bild"`
