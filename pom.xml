@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.dkt</groupId>
     <artifactId>e-smt</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
 
     <parent>
         <artifactId>e-service-parent</artifactId>
