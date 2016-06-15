@@ -7,7 +7,7 @@
     <parent>
         <artifactId>e-service-parent</artifactId>
         <groupId>eu.freme.e-services</groupId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
     </parent>
     
 
