@@ -54,9 +54,11 @@ public class DKTTranslate extends BaseRestController {
 
     @Autowired
     NIFParameterFactory nifParameterFactory;
+    
+    
 
 
-    @RequestMapping(value = "/e-smt", method = RequestMethod.POST)
+    @RequestMapping(value = "/e-smt", method = {RequestMethod.POST, RequestMethod.GET})
     public ResponseEntity<String> translate(
             @RequestHeader(value = "Accept", required = false) String acceptHeader,
             @RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
@@ -83,8 +85,8 @@ public class DKTTranslate extends BaseRestController {
             Resource subject = firstPlaintext.getSubject();
             String inputString = firstPlaintext.getObject().asLiteral().getString();
 
-            // get shell script (with inputString, sourceLang) and write result to resultString
-            String resultString = new TranslateSegment().executeCommand(inputString, sourceLang);
+            // get shell script (with inputString, sourceLang, targetLang) and write result to resultString
+            String resultString = new TranslateSegment().executeCommand(inputString, sourceLang, targetLang);
             // replace with ProcessBuilder eventually
 
 

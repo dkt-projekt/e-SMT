@@ -14,8 +14,9 @@ import java.io.IOException;
 
 public class TranslateSegment {
 
-    public String executeCommand(String inputStr, String srclang){
+    public String executeCommand(String inputStr, String srclang, String trglang){
 
+    	
         // hard-coded variables: the location of the moses
         //String pwd = "/Users/ansr01/Software/mosesdecoder-RELEASE-3.0/ankit_toy/4dkt/"; // for local machine
         String pwd = "/usr/local/mt/WS_dkt/"; // for dkt server
@@ -30,7 +31,7 @@ public class TranslateSegment {
         catch (IOException e) {}
 
         // The actual command to call the shell script with the 2 arguments
-        String command = "sh " + pwd + "translate_main.sh -i " + f.getAbsoluteFile() + " -l " + srclang;
+        String command = "sh " + pwd + "translate_main.sh -i " + f.getAbsoluteFile() + " -s " + srclang + " -t " + trglang;
 
         // Executing the command using a Process object
         StringBuffer output = new StringBuffer();
