@@ -22,3 +22,9 @@ A document in NIF format.
 
 Example cURL post for e-smt:
 `curl -X POST --header "Content-type:text/plain" "http://api.digitale-kuratierung.de/api/e-smt?source-lang=de&target-lang=en&input=das+bild"`
+
+
+## Notes of Moses Statistical Machine Translation Software
+This web service (hosted on the dkt-api server) assumes that Moses (the MT engine) is installed at: /usr/local/mt/bin, and the handler script (translate_main.sh) is placed at: /usr/local/mt
+
+Moses and its dependencies can be locally installed, following the instructions at http://www.statmt.org/moses/?n=Development.GetStarted
