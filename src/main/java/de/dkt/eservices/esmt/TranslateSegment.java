@@ -30,7 +30,7 @@ public class TranslateSegment {
         }
         catch (IOException e) {}
 
-        // The actual command to call the shell script with the 2 arguments
+        // The actual command to call the shell script with the 3 arguments: file source and target
         String command = "sh " + pwd + "translate_main.sh -i " + f.getAbsoluteFile() + " -s " + srclang + " -t " + trglang;
 
         // Executing the command using a Process object
