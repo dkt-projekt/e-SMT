@@ -20,7 +20,7 @@ public class TranslateSegment {
         // hard-coded variables: the location of the moses
         //String pwd = "/Users/ansr01/Software/mosesdecoder-RELEASE-3.0/ankit_toy/4dkt/"; // for local machine
         String pwd = "/usr/local/mt/WS_dkt/"; // for dkt server
-        File f = new File(pwd, "tempFil");  // temporary file created in pwd
+        File f = new File(pwd, "tempFile");  // temporary file created in pwd
 
         // storing the inputStr in a file
         try {
