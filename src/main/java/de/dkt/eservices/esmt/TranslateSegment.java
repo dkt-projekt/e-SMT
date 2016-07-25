@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.io.FileWriter;
 import java.io.IOException;
-import de.dkt.eservices.erattlesnakenlp.modules.Sparqler;
+//import de.dkt.eservices.erattlesnakenlp.modules.Sparqler;
 
 public class TranslateSegment {
 
