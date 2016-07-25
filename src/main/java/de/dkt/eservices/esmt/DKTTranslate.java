@@ -57,7 +57,7 @@ public class DKTTranslate extends BaseRestController {
     
     
 
-
+    // endpoint for vanilla translation
     @RequestMapping(value = "/e-smt", method = {RequestMethod.POST, RequestMethod.GET})
     public ResponseEntity<String> translate(
             @RequestHeader(value = "Accept", required = false) String acceptHeader,
@@ -86,8 +86,65 @@ public class DKTTranslate extends BaseRestController {
             String inputString = firstPlaintext.getObject().asLiteral().getString();
 
             // get shell script (with inputString, sourceLang, targetLang) and write result to resultString
-            String resultString = new TranslateSegment().executeCommand(inputString, sourceLang, targetLang);
+            // false indicates vanilla translation service
+            String resultString = new TranslateSegment().executeCommand(inputString, sourceLang, targetLang, false);
             // replace with ProcessBuilder eventually
+
+
+            if (!model.getNsPrefixMap().containsValue(RDFConstants.itsrdfPrefix)) {
+                model.setNsPrefix("itsrdf", RDFConstants.itsrdfPrefix);
+            }
+
+            Literal literal = model.createLiteral(resultString, targetLang);
+            subject.addLiteral(model.getProperty(RDFConstants.itsrdfPrefix + "target"), literal);
+
+            return restHelper.createSuccessResponse(model, nifParameters.getOutformat());
+        }catch (FREMEHttpException e){
+            logger.error("Error", e);
+            throw e;
+        } catch (Exception e) {
+            logger.error("Error", e);
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+    
+    // endpoint for crosslingual projection, i.e. output a nif document aligning source words to target words
+    @RequestMapping(value = "/e-smt/xlingual", method = {RequestMethod.POST, RequestMethod.GET})
+    public ResponseEntity<String> smtalign(
+            @RequestHeader(value = "Accept", required = false) String acceptHeader,
+            @RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
+            @RequestParam(value = "input", required = false) String input,
+            @RequestParam(value = "source-lang", required = false) String sourceLang,
+            @RequestParam(value = "target-lang", required = false) String targetLang,
+            @RequestBody (required = false) String postBody,
+            @RequestParam Map<String, String> allParams) {
+
+        NIFParameterSet nifParameters = restHelper.normalizeNif(postBody,
+                acceptHeader, contentTypeHeader, allParams, false);
+
+        Model model = null;
+
+        try {
+            if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
+                model = ModelFactory.createDefaultModel();
+                rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, nifParameterFactory.getDefaultPrefix());
+            } else {
+                model = rdfConversionService.unserializeRDF(postBody, nifParameters.getInformat());
+            }
+
+            Statement firstPlaintext = rdfConversionService.extractFirstPlaintext(model);
+            Resource subject = firstPlaintext.getSubject();
+            String inputString = firstPlaintext.getObject().asLiteral().getString();
+
+            // get shell script (with inputString, sourceLang, targetLang) and write result to resultString
+            // true indicates getting phrase trace and alignment points eventually
+            String resultString = new TranslateSegment().executeCommand(inputString, sourceLang, targetLang, true);
+            
+            // result contains phrase traces, we need source string, target string, alignment points
+            //XlingualProjection xling = new XlingualProjection();
+            //String source = new String (inputString);
+            //String target = xling.getTarget(resultString);
+            //String alignPoints = xling.ExtractAlignments(source, target, resultString);
 
 
             if (!model.getNsPrefixMap().containsValue(RDFConstants.itsrdfPrefix)) {
