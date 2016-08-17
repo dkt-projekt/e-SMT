@@ -10,6 +10,20 @@
         <version>0.2</version>
     </parent>
     
+    <dependencies>
+    
+    <dependency>
+			<groupId>de.dkt</groupId>
+			<artifactId>DKTCommon</artifactId>
+			<version>0.4-SNAPSHOT</version>
+			<!--  <exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+			</exclusions>-->
+		</dependency>
+	</dependencies>
 
     <repositories>
 	<repository>

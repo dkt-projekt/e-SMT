@@ -20,6 +20,7 @@ package de.dkt.eservices.esmt;
 import com.hp.hpl.jena.rdf.model.*;
 import eu.freme.common.conversion.etranslate.TranslationConversionService;
 import eu.freme.common.conversion.rdf.RDFConstants;
+import eu.freme.common.conversion.rdf.RDFConstants.RDFSerialization;
 import eu.freme.common.conversion.rdf.RDFConversionService;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.FREMEHttpException;
@@ -33,7 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import de.dkt.common.niftools.NIFWriter;
+
 import java.util.Map;
+
 
 
 /**
@@ -377,10 +381,10 @@ public class DKTTranslate extends BaseRestController {
         Model model = null;
 
         try {
-            if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
+            if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {  //input is plaintext
                 model = ModelFactory.createDefaultModel();
                 rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, nifParameterFactory.getDefaultPrefix());
-            } else {
+            } else {   // input is NIF
                 model = rdfConversionService.unserializeRDF(postBody, nifParameters.getInformat());
             }
 
@@ -402,24 +406,44 @@ public class DKTTranslate extends BaseRestController {
             if (!model.getNsPrefixMap().containsValue(RDFConstants.itsrdfPrefix)) {
                 model.setNsPrefix("itsrdf", RDFConstants.itsrdfPrefix);
             }
+            
+            
 
-            Literal literal = model.createLiteral(resultString, targetLang);
+            
+            
+            //model = getRdfConversionService().unserializeRDF(resultString, RDFSerialization.TURTLE);
+            
+            // Method 1: Preliminaries: context of the NIF document
+            // add more prefixes to the model
+            // Can perhaps move this to freme.common.RDFConstants
+            model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+            model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+            model.setNsPrefix("nif-ann", "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-annotation#");
+            
+            Literal literal = model.createLiteral(target, targetLang);
             subject.addLiteral(model.getProperty(RDFConstants.itsrdfPrefix + "target"), literal);
             
-            // Extract words of the source sentence
+            // Method 2: Source Language Phrases
             String[] sourceWords = source.split(" ");
             int start =0;
             int end = 0;
             for(int i=0; i < sourceWords.length; i++){ // Traverse through each word
             	end += sourceWords[i].length();
-            	String uri = "http://dkt-project.eu/ns/#char=" + start + "," + end;
-        		Resource annotation= model.createResource(uri);
+            	//String uri = "http://dkt-project.eu/ns/#char=" + start + "," + end;
+        		//Resource annotation= model.createResource(uri);
         		
-        		Property type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-        		annotation.addProperty(type,model.createResource(RDFConstants.nifPrefix + "Phrase"));
+        		//Property type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+        		//annotation.addProperty(type,model.createResource(RDFConstants.nifPrefix + "Phrase"));
+        		
+        		model = NIFWriter.addAnnotationMTSource(model,start,end,sourceWords[i]);
         		
         		start += end;
             }
+            
+    			
+            // Method 3: Target Language Phrases
+            // Extract words of the source sentence
+            
             
         
 

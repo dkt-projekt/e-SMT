@@ -10,6 +10,14 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDF;
+
+import de.dkt.common.niftools.NIF;
+import de.dkt.common.niftools.NIFReader;
+
 
 public class XlingualProjection {
 	
@@ -66,6 +74,7 @@ public class XlingualProjection {
 		
 		return alignPoints;
 	}
+	
 	
 	public static void main(String[] args) {
 		//System.out.println(new XlingualProjection().getTarget(new String("This |0-0| is a |1-2| string . |3-4|")));
