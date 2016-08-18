@@ -35,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import de.dkt.common.niftools.NIFWriter;
+import de.dkt.common.niftools.NIFReader;
 
 import java.util.Map;
 
@@ -413,7 +414,7 @@ public class DKTTranslate extends BaseRestController {
             
             //model = getRdfConversionService().unserializeRDF(resultString, RDFSerialization.TURTLE);
             
-            // Method 1: Preliminaries: context of the NIF document
+            // Method 1: Preliminaries: context of the NIF document (including whole sentence translation)
             // add more prefixes to the model
             // Can perhaps move this to freme.common.RDFConstants
             model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -424,6 +425,9 @@ public class DKTTranslate extends BaseRestController {
             subject.addLiteral(model.getProperty(RDFConstants.itsrdfPrefix + "target"), literal);
             
             // Method 2: Source Language Phrases
+            String documentURI = NIFReader.extractDocumentWholeURI(model);
+            Resource docResource = NIFReader.extractDocumentResourceURI(model);
+            
             String[] sourceWords = source.split(" ");
             int start =0;
             int end = 0;
@@ -435,7 +439,7 @@ public class DKTTranslate extends BaseRestController {
         		//Property type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
         		//annotation.addProperty(type,model.createResource(RDFConstants.nifPrefix + "Phrase"));
         		
-        		model = NIFWriter.addAnnotationMTSource(model,start,end,sourceWords[i]);
+        		model = NIFWriter.addAnnotationMTSource(model,start,end,sourceWords[i],docResource);
         		
         		start += end;
             }

@@ -23,7 +23,12 @@
 				</exclusion>
 			</exclusions>-->
 		</dependency>
-	</dependencies>
+    <dependency>
+    	<groupId>de.dkt</groupId>
+    	<artifactId>e-NLP</artifactId>
+    	<version>0.4-SNAPSHOT</version>
+    </dependency>
+    </dependencies>
 
     <repositories>
 	<repository>
