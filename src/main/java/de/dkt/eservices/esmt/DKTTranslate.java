@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 import de.dkt.common.niftools.NIFWriter;
 import de.dkt.common.niftools.NIFReader;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -382,26 +383,38 @@ public class DKTTranslate extends BaseRestController {
         Model model = null;
 
         try {
-            if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {  //input is plaintext
+            // Create a NIF model from the input parameters if the input is not already a NIF model
+        	if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {  //input is plaintext
                 model = ModelFactory.createDefaultModel();
                 rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, nifParameterFactory.getDefaultPrefix());
             } else {   // input is NIF
                 model = rdfConversionService.unserializeRDF(postBody, nifParameters.getInformat());
             }
 
-            Statement firstPlaintext = rdfConversionService.extractFirstPlaintext(model);
+            // Extract the input sentence to be translated from the NIF model
+        	Statement firstPlaintext = rdfConversionService.extractFirstPlaintext(model);
             Resource subject = firstPlaintext.getSubject();
             String inputString = firstPlaintext.getObject().asLiteral().getString();
 
             // get shell script (with inputString, sourceLang, targetLang) and write result to resultString
-            // true indicates getting phrase trace and alignment points eventually
+            // true indicates getting phrase trace and alignment points
             String resultString = new TranslateSegment().executeCommandTranslate(inputString, sourceLang, targetLang, true);
+            
             
             // result contains phrase traces, we need source string, target string, alignment points
             XlingualProjection xling = new XlingualProjection();
-            String source = new String(inputString);
+            // Temporary Solution: The source in phrase trace is tokenised (and lower-cased), 
+            // so we will tokenize it to ensure the alignment points references do not mismatch
+            String source = new String(new TranslateSegment().executeCommandTokenize(inputString, sourceLang, true));
             String target = xling.getTarget(resultString);
-            //String alignPoints = xling.ExtractAlignments(source, target, resultString);
+            ArrayList<String> alignPoints = xling.ExtractAlignments(source, target, resultString);
+            
+            // We will create a new model after nullifying the previous model,
+            // because we want to replace the source string (main Resource) with the tokenised version that was used to obtain alignment points
+            model = null;
+            model = ModelFactory.createDefaultModel();
+            rdfConversionService.plaintextToRDF(model, source, null, nifParameterFactory.getDefaultPrefix());
+            //NIFWriter.addInitialString(model, source, NIFReader.extractDocumentWholeURI(model));
 
 
             if (!model.getNsPrefixMap().containsValue(RDFConstants.itsrdfPrefix)) {
@@ -421,32 +434,47 @@ public class DKTTranslate extends BaseRestController {
             model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
             model.setNsPrefix("nif-ann", "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-annotation#");
             
+            Statement fpt = rdfConversionService.extractFirstPlaintext(model);
+            Resource sub = fpt.getSubject();
             Literal literal = model.createLiteral(target, targetLang);
-            subject.addLiteral(model.getProperty(RDFConstants.itsrdfPrefix + "target"), literal);
+            sub.addLiteral(model.getProperty(RDFConstants.itsrdfPrefix + "target"), literal);
             
             // Method 2: Source Language Phrases
-            String documentURI = NIFReader.extractDocumentWholeURI(model);
+           // String documentURI = NIFReader.extractDocumentWholeURI(model);
             Resource docResource = NIFReader.extractDocumentResourceURI(model);
             
-            String[] sourceWords = source.split(" ");
+            //String[] sourceWords = source.split(" ");
+            String[] sourcePhrases = xling.getSrcPhrases(alignPoints);
             int start =0;
             int end = 0;
-            for(int i=0; i < sourceWords.length; i++){ // Traverse through each word
-            	end += sourceWords[i].length();
+            String annUnit = "_:annotationUnit";
+            String annIndex;
+            int num;
+            
+            for(int i=0; i < sourcePhrases.length; i++){ // Traverse through each phrase
+            	end = start + sourcePhrases[i].length();
             	//String uri = "http://dkt-project.eu/ns/#char=" + start + "," + end;
         		//Resource annotation= model.createResource(uri);
         		
         		//Property type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
         		//annotation.addProperty(type,model.createResource(RDFConstants.nifPrefix + "Phrase"));
         		
-        		model = NIFWriter.addAnnotationMTSource(model,start,end,sourceWords[i],docResource);
+            	num = i+1;
+            	annIndex = new String(annUnit + num);
+        		NIFWriter.addAnnotationMTSource(model,start,end,sourcePhrases[i],docResource,annIndex);
         		
-        		start += end;
+        		start = end + 1;
             }
             
     			
             // Method 3: Target Language Phrases
-            // Extract words of the source sentence
+            // Adding target language annotations using the AnonID from Jena Model to point to a blank node resource
+            String[] targetPhrases = xling.getTrgPhrases(alignPoints);
+            String annotated;
+            for (int i=1; i<=targetPhrases.length; i++){ // Traverse through each target / annotation unit
+            	annotated = new String("_:annotationUnit" + i);
+            	NIFWriter.addAnnotationMTTarget(model, targetPhrases[i-1], targetLang, docResource, annotated);
+            }
             
             
         
