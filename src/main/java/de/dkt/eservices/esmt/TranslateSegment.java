@@ -17,8 +17,8 @@ import java.io.IOException;
 public class TranslateSegment {
 
 	// hard-coded public variables: the location of the moses
-    public String pwd = "/Users/ansr01/Software/mosesdecoder-RELEASE-3.0/ankit_toy/4dkt/"; // for local machine
-    //public String pwd = "/usr/local/mt/WS_dkt/"; // for dkt server
+    //public String pwd = "/Users/ansr01/Software/mosesdecoder-RELEASE-3.0/ankit_toy/4dkt/"; // for local machine
+    public String pwd = "/usr/local/mt/WS_dkt/"; // for dkt server
     
 	/**
 	 * Method to send a shell script execution command translate to the server
