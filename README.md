@@ -35,4 +35,5 @@ Example cURL post for e-smt:
 ## Notes on Moses Statistical Machine Translation Software
 This end-point (hosted on the dkt-api server) relies on external software and assumes that Moses (the MT engine) is installed at: /usr/local/mt/bin, and the handler script (translate_main.sh) is placed at: /usr/local/mt
 
+
 Moses and its dependencies can be locally installed, following the instructions at http://www.statmt.org/moses/?n=Development.GetStarted. Please contact Ankit Srivastava (firstName.lastName@dfki.de) for more information.
