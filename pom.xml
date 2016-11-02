@@ -7,7 +7,7 @@
     <parent>
         <artifactId>e-service-parent</artifactId>
         <groupId>eu.freme.e-services</groupId>
-        <version>0.2</version>
+        <version>0.9</version>
     </parent>
     
     <dependencies>
@@ -29,6 +29,16 @@
     	<version>0.4</version>
     </dependency>
     </dependencies>
+
+    <build>
+<plugins>
+<plugin>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-release-plugin</artifactId>
+<version>2.5.3</version>
+</plugin>
+</plugins>
+</build>
 
     <repositories>
 	<repository>
