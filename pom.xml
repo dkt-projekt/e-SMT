@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.dkt</groupId>
     <artifactId>e-smt</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
 
     <parent>
         <artifactId>e-service-parent</artifactId>
@@ -86,6 +86,6 @@
                 <connection>scm:git:git@github.com:dkt-projekt/e-SMT.git</connection>
                 <url>scm:git:git@github.com/dkt-projekt/e-SMT.git</url>
                 <developerConnection>scm:git:git@github.com:dkt-projekt/e-SMT.git</developerConnection>
-                <tag>HEAD</tag>
+                <tag>e-smt-0.4</tag>
         </scm>
 </project>
