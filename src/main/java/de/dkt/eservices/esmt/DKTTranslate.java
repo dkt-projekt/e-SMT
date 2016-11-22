@@ -35,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import de.dkt.common.niftools.NIFWriter;
+import de.dkt.common.niftools.DKTNIF;
 import de.dkt.common.niftools.NIFReader;
 
 import java.util.ArrayList;
@@ -71,9 +72,44 @@ public class DKTTranslate extends BaseRestController {
             @RequestParam(value = "input", required = false) String input,
             @RequestParam(value = "source-lang", required = false) String sourceLang,
             @RequestParam(value = "target-lang", required = false) String targetLang,
+            @RequestParam(value = "i", required = false) String i,
+			@RequestParam(value = "informat", required = false) String informat,
+			@RequestParam(value = "f", required = false) String f,
+			@RequestParam(value = "outformat", required = false) String outformat,
+			@RequestParam(value = "o", required = false) String o,
+			@RequestParam(value = "prefix", required = false) String prefix,
+			@RequestParam(value = "p", required = false) String p,
             @RequestBody (required = false) String postBody,
             @RequestParam Map<String, String> allParams) {
 
+    	if(allParams.get("input")==null){
+        	allParams.put("input", input);
+        }
+        if(allParams.get("informat")==null){
+        	allParams.put("informat", informat);
+        }
+        if(allParams.get("outformat")==null){
+        	allParams.put("outformat", outformat);
+        }
+        if(allParams.get("prefix")==null){
+        	allParams.put("prefix", prefix);
+        }
+        if (input == null) {
+			input = i;
+		}
+		if (informat == null) {
+			informat = f;
+		}
+		if (outformat == null) {
+			outformat = o;
+		}
+		if (prefix == null) {
+			prefix = p;
+		}
+        if (prefix == null || prefix.equalsIgnoreCase("")){
+			prefix = DKTNIF.getDefaultPrefix();
+		}
+        
         NIFParameterSet nifParameters = restHelper.normalizeNif(postBody,
                 acceptHeader, contentTypeHeader, allParams, false);
 
@@ -82,7 +118,7 @@ public class DKTTranslate extends BaseRestController {
         try {
             if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
                 model = ModelFactory.createDefaultModel();
-                rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, nifParameterFactory.getDefaultPrefix());
+                rdfConversionService.plaintextToRDF(model, nifParameters.getInput(), null, prefix);
             } else {
                 model = rdfConversionService.unserializeRDF(postBody, nifParameters.getInformat());
             }
