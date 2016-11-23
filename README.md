@@ -11,7 +11,7 @@ The system is constantly being updated and newer models as well as language pair
 
 ## Endpoint
 
-http://api.digitale-kuratierung.de/api/e-smt
+https://api.digitale-kuratierung.de/api/e-smt
 
 ### Input
 The API conforms to the general NIF API specifications. For more details, see:
@@ -29,7 +29,7 @@ For now, only the following language pairs are supported. English (`en`), German
 A document in NIF format.
 
 Example cURL post for e-smt:
-`curl -X POST --header "Content-type:text/plain" -d 'Click on the right button.' "http://api.digitale-kuratierung.de/api/e-smt?source-lang=de&target-lang=en"`
+`curl -X POST --header "Content-type:text/plain" -d 'Click on the right button.' "https://api.digitale-kuratierung.de/api/e-smt?source-lang=de&target-lang=en"`
 
 
 ## Notes on Moses Statistical Machine Translation Software
