@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.dkt</groupId>
     <artifactId>e-smt</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.5</version>
 
     <parent>
 	<groupId>eu.freme-project</groupId>
@@ -72,6 +72,6 @@
                 <connection>scm:git:git@github.com:dkt-projekt/e-SMT.git</connection>
                 <url>scm:git:git@github.com/dkt-projekt/e-SMT.git</url>
                 <developerConnection>scm:git:git@github.com:dkt-projekt/e-SMT.git</developerConnection>
-                <tag>e-smt-0.4</tag>
+                <tag>e-smt-0.5</tag>
         </scm>
 </project>
