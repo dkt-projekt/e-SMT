@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.dkt</groupId>
     <artifactId>e-smt</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
 
     <parent>
 	<groupId>eu.freme-project</groupId>
