@@ -72,6 +72,6 @@
                 <connection>scm:git:git@github.com:dkt-projekt/e-SMT.git</connection>
                 <url>scm:git:git@github.com/dkt-projekt/e-SMT.git</url>
                 <developerConnection>scm:git:git@github.com:dkt-projekt/e-SMT.git</developerConnection>
-                <tag>HEAD</tag>
+                <tag>e-smt-0.6</tag>
         </scm>
 </project>
